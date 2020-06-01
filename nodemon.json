@@ -1,0 +1,10 @@
+{
+  "env": {
+    "NODE_PATH": "src",
+    "NODE_ENV": "development",
+    "JWT_SECRET": "supersecret!!!"
+  },
+  "watch": ["src"],
+  "ext": "ts",
+  "exec": "ts-node ./src/rest.ts"
+}
