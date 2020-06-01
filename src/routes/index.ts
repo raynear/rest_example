@@ -1,19 +1,23 @@
 import { Router, Request, Response } from 'express';
 import mongoose from 'mongoose';
+import { authenticateUser } from "../auth";
 import Book from '../models/book';
 
 const router = Router();
 
-// GET ALL BOOKS
-router.get('/', (req: Request, res: Response) => {
-	res.send('Hello World!');
-});
+
+// router.get('/', authenticateUser, (req: Request, res: Response) => {
+// 	res.send('Hello World!');
+// });
 
 router.get('/echo', (req: Request, res: Response) => {
 	res.send(req.query);
 });
 
-router.get('/api/books', (req: Request, res: Response) => {
+// Books API
+
+// GET ALL BOOKS
+router.get('/api/books', authenticateUser, (req: Request, res: Response) => {
 	Book.find((err, books) => {
 		if(err) return res.status(500).send({error: 'database failure'});
 		console.log("test");

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    example ejs
+    <table>
+      <thead>
+        <tr>
+          <td>opt</td>
+          <td>value</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>id</td>
+          <td><%= id %></td>
+        </tr>
+        <tr>
+          <td>displayName</td>
+          <td><%= displayName %></td>
+        </tr>
+        <tr>
+          <td>name</td>
+          <td><%= name.familyName %><%= name.givenName %></td>
+        </tr>
+        <tr>
+          <td>emails</td>
+          <td><%= emails[0].value %></td>
+        </tr>
+        <tr>
+          <td>photos</td>
+          <td><%= photos[0].value %></td>
+        </tr>
+      </tbody>
+    </table>
+    <footer>
+    </footer>
+  </body>
+</html>
