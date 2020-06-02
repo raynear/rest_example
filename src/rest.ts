@@ -9,7 +9,6 @@ import path from 'path';
 
 import auth from './auth';
 import router from './routes';
-// import bookSchema from './models/book.ts';
 
 const app = express();
 
@@ -23,7 +22,6 @@ db.once('open', () => {
 });
 mongoose.connect('mongodb://localhost/rest', {useNewUrlParser: true, useUnifiedTopology: true});
 
-// const Book = mongoose.model('book', bookSchema);
 // app.use(express.favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -61,7 +59,7 @@ app.use((err: Err, req: Request, res: Response, next: NextFunction) => {
 
 
 app.listen(3000, () => {
-	console.log('example app');
+	console.log('rest app with oauth2.0 login');
 });
 
 export default app;

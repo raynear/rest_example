@@ -1,26 +1,19 @@
 import { Router, Request, Response } from 'express';
 import mongoose from 'mongoose';
-import { authenticateUser } from "../auth";
+import { onlyUser } from "../auth";
 import Book from '../models/book';
 
 const router = Router();
-
-
-// router.get('/', authenticateUser, (req: Request, res: Response) => {
-// 	res.send('Hello World!');
-// });
 
 router.get('/echo', (req: Request, res: Response) => {
 	res.send(req.query);
 });
 
 // Books API
-
 // GET ALL BOOKS
-router.get('/api/books', authenticateUser, (req: Request, res: Response) => {
+router.get('/api/books', onlyUser, (req: Request, res: Response) => {
 	Book.find((err, books) => {
 		if(err) return res.status(500).send({error: 'database failure'});
-		console.log("test");
 		res.json(books);
 	});
 });
@@ -44,8 +37,6 @@ router.post('/api/book', (req: Request, res: Response) => {
 	const book = new Book();
 	book.title = req.body.title;
 	book.author = req.body.author;
-	console.log(req.body);
-	console.log(new Date(req.body.published_date));
 	book.published_date = new Date(req.body.published_date);
 
 	book.save((err:mongoose.Error) => {

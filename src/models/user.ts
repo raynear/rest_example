@@ -28,24 +28,67 @@ const userSchema = new Schema({
 
 // userSchema.path('generateAuthToken').set()
 
-export function generateAuthToken (id: string, admin: boolean, moderator: boolean) {
-  const token = jsonwebtoken
+export function generateAuthToken (id: string, name: string, email: string, avatar: string, admin: boolean, moderator: boolean) {
+  const accessToken = jsonwebtoken
     .sign(
       {
         id,
+        name,
+        email,
+        avatar,
         admin: !!admin,
         moderator: !!moderator,
       },
       process.env.JWT_SECRET as string,
       {
-        expiresIn: '24h',
-        audience: process.env.JWT_AUDIENCE as string,
+        expiresIn: '1h',
         issuer: process.env.JWT_ISSUER as string,
         subject: id,
       }
     )
     .toString()
-  return token
+  const refreshToken = jsonwebtoken
+    .sign(
+      {
+        id,
+        name,
+        email,
+        avatar,
+        admin: !!admin,
+        moderator: !!moderator,
+      },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: '14d',
+        issuer: process.env.JWT_ISSUER as string,
+        subject: id,
+      }
+    )
+    .toString()
+  return {accessToken, refreshToken}
+}
+
+export function refreshAccessToken (refreshToken: string) {
+  const decoded = jsonwebtoken.verify(refreshToken, process.env.JWT_SECRET as string) as any;
+  const accessToken = jsonwebtoken
+    .sign(
+      {
+        id:decoded.id,
+        name:decoded.name,
+        email:decoded.email,
+        avatar:decoded.avatar,
+        admin: decoded.admin,
+        moderator: decoded.moderator,
+      },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: '1h',
+        issuer: process.env.JWT_ISSUER as string,
+        subject: decoded.id,
+      }
+    )
+    .toString();
+  return accessToken;
 }
 
 export function setGoogleAvatarSize (avatarUrl: string, size: number) {
@@ -79,11 +122,7 @@ export function newUserObj(provider: string, profile: any) {
       avatar: ""
     }
     if (profile.photos[0].value) {
-      newUser.avatar = profile.photos[0].value;/*{
-        small: setGoogleAvatarSize(profile.photos[0].value, 32),
-        medium: setGoogleAvatarSize(profile.photos[0].value, 64),
-        large: setGoogleAvatarSize(profile.photos[0].value, 184),
-      }*/
+      newUser.avatar = profile.photos[0].value;
     }
   }
   return newUser
@@ -103,8 +142,9 @@ export async function findOrCreate(email: string, id: string, provider: string, 
     if (!user) {
       user = await createUser(provider, profile);
     }
-    const token = generateAuthToken(id, user.admin, user.moderator);
-    return { user, token };
+    const {accessToken, refreshToken} = generateAuthToken(id, profile.displayName, email, profile.photos[0].value, user.admin, user.moderator);
+    // console.log('findOrCreate', accessToken, refreshToken);
+    return { user, accessToken, refreshToken };
   } catch (e) {
     return Promise.reject(new Error(e))
   }

@@ -17,20 +17,16 @@
           <td><%= id %></td>
         </tr>
         <tr>
-          <td>displayName</td>
-          <td><%= displayName %></td>
-        </tr>
-        <tr>
           <td>name</td>
-          <td><%= name.familyName %><%= name.givenName %></td>
+          <td><%= name %></td>
         </tr>
         <tr>
-          <td>emails</td>
-          <td><%= emails[0].value %></td>
+          <td>email</td>
+          <td><%= email %></td>
         </tr>
         <tr>
-          <td>photos</td>
-          <td><%= photos[0].value %></td>
+          <td>avatar</td>
+          <td><img src=<%= avatar %> /></td>
         </tr>
       </tbody>
     </table>
